@@ -13,7 +13,8 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
     volumes:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db_data_${GROUP_NAME}:/var/lib/mysql
+      # UBAH DISINI: Gunakan nama statis db_data_D4
+      - db_data_D4:/var/lib/mysql 
     networks:
       - tekser_network
 
@@ -50,9 +51,9 @@ services:
       - tekser_network
 
 # --- VOLUMES AND NETWORKS ---
-# Perbaikan: Tambahkan '{}' setelah nama volume untuk mendefinisikannya sebagai objek
 volumes:
-  db_data_${GROUP_NAME}: {}
+  # UBAH DISINI: Tulis secara manual tanpa variabel agar tidak error
+  db_data_D4: {}
 
 networks:
   tekser_network:
