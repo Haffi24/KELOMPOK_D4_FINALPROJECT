@@ -9,9 +9,10 @@ require('dotenv').config();
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
+    // Ganti DB_PASSWORD menjadi DB_PASS agar sinkron dengan docker-compose dan .env lab
+    password: process.env.DB_PASS, 
     database: process.env.DB_NAME,
-    port: process.env.DB_PORT || 3306, // Default port MySQL adalah 3306
+    port: process.env.DB_PORT || 3306,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
