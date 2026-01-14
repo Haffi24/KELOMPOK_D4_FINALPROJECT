@@ -50,8 +50,9 @@ services:
       - tekser_network
 
 # --- VOLUMES AND NETWORKS ---
+# Perbaikan: Tambahkan '{}' setelah nama volume untuk mendefinisikannya sebagai objek
 volumes:
-  db_data_${GROUP_NAME}:
+  db_data_${GROUP_NAME}: {}
 
 networks:
   tekser_network:
