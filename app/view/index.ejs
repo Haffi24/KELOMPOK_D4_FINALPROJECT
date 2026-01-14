@@ -1,11 +1,257 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Project Tekser</title>
-  </head>
-  <body>
-    <h1>Hello World! Silakan edit file ini.</h1>
-  </body>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direktori TA | Kelompok D4</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .navbar { background: linear-gradient(90deg, #1a237e 0%, #283593 100%) !important; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .card { border: none; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
+        
+        .equal-height-row { display: flex; flex-wrap: wrap; }
+        .equal-height-row > [class*='col-'] { display: flex; flex-direction: column; }
+        .equal-height-row .card { flex: 1; display: flex; flex-direction: column; }
+        
+        .btn-primary { background-color: #1a237e; border: none; border-radius: 10px; font-weight: 600; padding: 0.8rem; }
+        .table thead th { background-color: #f1f5f9; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; color: #475569; padding: 1rem; }
+        .project-title { font-weight: 700; color: #0f172a; font-size: 1.05rem; }
+        .search-box { position: relative; width: 100%; max-width: 300px; }
+        .search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        .search-box input { padding-left: 45px; border-radius: 12px; border: 1px solid #e2e8f0; }
+        .bg-edit-mode { background-color: #fff9db !important; border: 1px solid #fab005 !important; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark p-3 sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/"><i class="fas fa-graduation-cap me-2 text-warning"></i>DIREKTORI TA D4</a>
+            <span class="badge bg-white text-primary rounded-pill px-3 py-2 fw-bold shadow-sm">Teknologi Server</span>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="row g-4 equal-height-row">
+            <div class="col-lg-4">
+                <div class="card p-4" id="cardForm">
+                    <h5 class="fw-bold mb-4 text-primary" id="formTitle"><i class="fas fa-plus-circle me-2"></i>Registrasi Proyek</h5>
+                    <form id="formProyekUtama">
+                        <input type="hidden" id="proyekId" name="id">
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Judul Tugas Akhir</label>
+                            <textarea id="inputJudul" name="judul" class="form-control" rows="3" placeholder="Tulis judul..." required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">No. Kelompok</label>
+                            <input type="number" id="inputKelompok" name="kelompok_id" class="form-control" value="4" required>
+                        </div>
+
+                        <div class="mb-4 p-3 bg-light rounded-4 border">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <label class="small fw-bold text-primary m-0">Anggota Tim</label>
+                                <button type="button" class="btn btn-sm btn-link text-decoration-none fw-bold" onclick="tambahBaris('memberListContainer', 'nama_anggota[]', 'role_assignment[]')">
+                                    <i class="fas fa-plus-circle me-1"></i>Tambah
+                                </button>
+                            </div>
+                            <div id="memberListContainer">
+                                </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-auto">
+                            <button type="submit" id="btnSubmit" class="btn btn-primary shadow">SIMPAN PROYEK</button>
+                            <button type="button" id="btnBatal" class="btn btn-outline-secondary d-none" onclick="resetForm()">BATAL EDIT</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="p-4 border-bottom bg-white d-flex justify-content-between align-items-center gap-3">
+                        <h5 class="fw-bold m-0">Log Tugas Akhir</h5>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" class="form-control" placeholder="Cari data...">
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" id="projectTable">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">Informasi TA</th>
+                                    <th>Status Review</th>
+                                    <th>Anggota & Role</th>
+                                    <th class="text-end pe-4">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% items.forEach(p => { %>
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="project-title mb-1"><%= p.judul %></div>
+                                            <span class="text-muted small fw-bold">KELOMPOK <%= p.kelompok_id %></span>
+                                        </td>
+                                        <td>
+                                            <form action="/api/proyek/status/<%= p.id %>" method="POST">
+                                                <select name="status" onchange="this.form.submit()" class="form-select form-select-sm fw-bold border-0 bg-light shadow-none">
+                                                    <option value="menunggu" <%= p.status === 'menunggu' ? 'selected' : '' %>>🟡 Menunggu</option>
+                                                    <option value="disetujui" <%= p.status === 'disetujui' ? 'selected' : '' %>>🟢 Setujui</option>
+                                                    <option value="ditolak" <%= p.status === 'ditolak' ? 'selected' : '' %>>🔴 Tolak</option>
+                                                </select>
+                                            </form>
+                                        </td>
+                                        <td class="small text-muted"><%- p.info_anggota %></td>
+                                        <td class="text-end pe-4">
+                                            <button onclick="tarikKeForm('<%= p.id %>', '<%= p.judul %>', '<%= p.kelompok_id %>', '<%= p.info_anggota %>')" class="btn btn-outline-primary btn-sm rounded-circle me-1" title="Edit di Form Kiri"><i class="fas fa-edit"></i></button>
+                                            <button onclick="hapusProyek('<%= p.id %>')" class="btn btn-outline-danger btn-sm rounded-circle"><i class="fas fa-trash-alt"></i></button>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="p-4 border-top">
+                        <nav>
+                            <ul class="pagination pagination-sm justify-content-center mb-0">
+                                <li class="page-item <%= currentPage == 1 ? 'disabled' : '' %>">
+                                    <a class="page-link shadow-none border-0" href="?page=<%= parseInt(currentPage) - 1 %>">Prev</a>
+                                </li>
+                                <% for(let i = 1; i <= totalPages; i++) { %>
+                                    <li class="page-item <%= currentPage == i ? 'active' : '' %>">
+                                        <a class="page-link shadow-none border-0 mx-1 rounded-2" href="?page=<%= i %>"><%= i %></a>
+                                    </li>
+                                <% } %>
+                                <li class="page-item <%= currentPage == totalPages ? 'disabled' : '' %>">
+                                    <a class="page-link shadow-none border-0" href="?page=<%= parseInt(currentPage) + 1 %>">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi Tambah Baris Anggota
+        function tambahBaris(containerId, inputName, selectName, valNama = '', valRole = '') {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = 'member-item mb-2 d-flex gap-2';
+            div.innerHTML = `
+                <div class="flex-grow-1">
+                    <input type="text" name="${inputName}" class="form-control form-control-sm mb-1" placeholder="Nama" value="${valNama}" required>
+                    <select name="${selectName}" class="form-select form-select-sm" required>
+                        <option value="Ketua Kelompok" ${valRole.includes('Ketua') ? 'selected' : ''}>Ketua Kelompok</option>
+                        <option value="Frontend Developer" ${valRole.includes('Frontend') ? 'selected' : ''}>Frontend Developer</option>
+                        <option value="Backend Developer" ${valRole.includes('Backend') ? 'selected' : ''}>Backend Developer</option>
+                        <option value="DevOps Engineer" ${valRole.includes('DevOps') ? 'selected' : ''}>DevOps Engineer</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger border-0 mt-1" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+            `;
+            container.appendChild(div);
+        }
+
+        // FITUR UTAMA: Tarik data log ke form
+        function tarikKeForm(id, judul, kelompok, infoRaw) {
+            // Ubah UI Form ke mode Edit
+            document.getElementById('cardForm').classList.add('bg-edit-mode');
+            document.getElementById('formTitle').innerHTML = '<i class="fas fa-pen-to-square me-2 text-warning"></i>Mode Edit Proyek';
+            document.getElementById('btnSubmit').innerHTML = 'PERBARUI DATA';
+            document.getElementById('btnBatal').classList.remove('d-none');
+            
+            // Masukkan data ke input
+            document.getElementById('proyekId').value = id;
+            document.getElementById('inputJudul').value = judul;
+            document.getElementById('inputKelompok').value = kelompok;
+
+            // Parsing Anggota Tim
+            const container = document.getElementById('memberListContainer');
+            container.innerHTML = '';
+            infoRaw.split('<br>').forEach(m => {
+                const match = m.match(/• (.*?) \((.*?)\)/);
+                if (match) tambahBaris('memberListContainer', 'nama_anggota[]', 'role_assignment[]', match[1], match[2]);
+            });
+
+            // Scroll ke atas agar user fokus pada form
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Reset Form ke mode Registrasi
+        function resetForm() {
+            document.getElementById('cardForm').classList.remove('bg-edit-mode');
+            document.getElementById('formTitle').innerHTML = '<i class="fas fa-plus-circle me-2"></i>Registrasi Proyek';
+            document.getElementById('btnSubmit').innerHTML = 'SIMPAN PROYEK';
+            document.getElementById('btnBatal').classList.add('d-none');
+            document.getElementById('proyekId').value = '';
+            document.getElementById('formProyekUtama').reset();
+            
+            document.getElementById('memberListContainer').innerHTML = '';
+            tambahBaris('memberListContainer', 'nama_anggota[]', 'role_assignment[]');
+        }
+
+        // Handle Submit (Multi-fungsi: POST atau PUT)
+        document.getElementById('formProyekUtama').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('proyekId').value;
+            
+            const payload = {
+                judul: document.getElementById('inputJudul').value,
+                kelompok_id: document.getElementById('inputKelompok').value,
+                nama_anggota: Array.from(document.getElementsByName('nama_anggota[]')).map(i => i.value),
+                role_assignment: Array.from(document.getElementsByName('role_assignment[]')).map(s => s.value)
+            };
+
+            // Jika ada ID, gunakan PUT. Jika tidak, gunakan POST standar
+            const url = id ? `/api/proyek/${id}` : '/api/proyek-masal';
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    location.reload();
+                } else {
+                    const errData = await res.json();
+                    alert(errData.message || 'Gagal menyimpan data.');
+                }
+            } catch (error) {
+                alert('Terjadi kesalahan koneksi.');
+            }
+        });
+
+        // Search Logic
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const term = this.value.toLowerCase();
+            document.querySelectorAll('#projectTable tbody tr').forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(term) ? "" : "none";
+            });
+        });
+
+        async function hapusProyek(id) {
+            if (confirm('Hapus data proyek ini?')) {
+                const res = await fetch(`/api/proyek/${id}`, { method: 'DELETE' });
+                if (res.ok) location.reload();
+            }
+        }
+
+        // Inisialisasi awal baris anggota
+        window.onload = () => { if(!document.getElementById('proyekId').value) tambahBaris('memberListContainer', 'nama_anggota[]', 'role_assignment[]'); };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
